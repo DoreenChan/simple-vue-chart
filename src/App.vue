@@ -11,24 +11,14 @@
       <fieldset>
         <legend>Filters</legend>
         <div class="chart-filters-wrapper">
-          <CheckBox
-            v-for="filter in chartFilters.checkboxes"
-            :key="filter.id"
-            :label="filter.label"
-            :id="filter.id"
-            :value="filter.label"
-            @toggle-chart-type-filter="toogleChartTypeFilter"
-            :selectedYear="chartFilters.dropdown.selected"
-            ref="checkboxRef"
-          />
+          <CheckBox v-for="filter in chartFilters.checkboxes" :key="filter.id" :label="filter.label" :id="filter.id"
+            :value="filter.label" @toggle-chart-type-filter="toogleChartTypeFilter"
+            :selectedYear="chartFilters.dropdown.selected" ref="checkboxRef" />
 
           <div class="dropdown-wrapper">
             Year:
-            <DropDown
-              :options="chartFilters.dropdown.options"
-              :selectedYear="chartFilters.dropdown.selected"
-              @update:selectedYear="updateSelectedYear"
-            />
+            <DropDown :options="chartFilters.dropdown.options" :selectedYear="chartFilters.dropdown.selected"
+              @update:selectedYear="updateSelectedYear" />
           </div>
 
           Title: <input v-model="chartTitle" placeholder="Please enter your chart title." />
@@ -47,9 +37,9 @@
 
 <script lang="ts">
 import CheckBox from './components/Checkbox.vue';
-import DropDown from './components/Dropdown.vue';
+import DropDown from './components/DropDown.vue';
 import { chartData, chartOptions, chartFilters } from './chartConfig.js';
-import { Bar, Line } from 'vue-chartjs';
+import { Bar, Line as LineChart } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -77,7 +67,7 @@ export default {
   name: 'SimpleChart',
   components: {
     Bar,
-    Line,
+    LineChart,
     CheckBox,
     DropDown,
   },
