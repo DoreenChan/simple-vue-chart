@@ -8,18 +8,28 @@
       <h3>Sales and Profit Margin Combo Chart</h3>
 
       <!-- Fliter wrapper -->
-      <div class="chart-filters-wrapper">
-        <CheckBox v-for="(filter) in chartFilters.checkboxes" :key="filter.id" :label="filter.label" :id="filter.id"
-          :value="filter.label" @toggle-chart-type-filter="toogleChartTypeFilter"
-          :selectedYear="chartFilters.dropdown.selected" ref="checkboxRef" />
+      <fieldset>
+        <legend>Filters</legend>
+        <div class="chart-filters-wrapper">
+          <CheckBox v-for="(filter) in chartFilters.checkboxes" :key="filter.id" :label="filter.label" :id="filter.id"
+            :value="filter.label" @toggle-chart-type-filter="toogleChartTypeFilter"
+            :selectedYear="chartFilters.dropdown.selected" ref="checkboxRef" />
 
-        Year:
-        <DropDown :options="chartFilters.dropdown.options" :selectedYear="chartFilters.dropdown.selected"
-          @update:selectedYear="updateSelectedYear" />
-      </div>
+          <div class="dropdown-wrapper">
+            Year:
+            <DropDown :options="chartFilters.dropdown.options" :selectedYear="chartFilters.dropdown.selected"
+              @update:selectedYear="updateSelectedYear" />
+          </div>
+
+          Title: <input v-model="chartTitle" placeholder="Please enter your chart title." />
+        </div>
+      </fieldset>
+
 
       <!-- Chart Wrapper -->
       <div class="chart-wrapper">
+        <h3>{{ chartTitle }}</h3>
+
         <Bar ref="comboRef" id="combo-chart" :options="chartOptions" :data="chartData" />
       </div>
     </div>
@@ -52,7 +62,7 @@ export default {
     DropDown
   },
   data() {
-    return { chartData, chartOptions, chartFilters };
+    return { chartData, chartOptions, chartFilters, chartTitle: 'Chart Title' };
   },
   methods: {
     hideAllDataset(datasets) {
@@ -60,7 +70,7 @@ export default {
         dataset.hidden = true;
       });
     },
-    groupDatasetByYear(datasets) {
+    getDatasetByYear(datasets) {
       const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
 
       const data = datasets.filter((dataset) => dataset.stack === year);
@@ -79,19 +89,19 @@ export default {
       this.hideAllDataset(datasets);
 
       //Check for year
-      const displayDataset = this.groupDatasetByYear(datasets).data;
+      const displayDataset = this.getDatasetByYear(datasets).data;
 
       //Check for type
       uncheckedValues.forEach(checkbox => {
         displayDataset.find(data => data.label == checkbox.label).hidden = true;
       });
+
+      //Check for x-axis labeling
+      chart.options.scales.x.title.text = this.selectedYear;
       chart.update();
     },
     toogleChartTypeFilter() {
       this.filterDatasets();
-    },
-    isChecked(chartType) {
-      return !!chartType;
     },
     updateSelectedYear(newSelectedYear) {
       //Update selected year

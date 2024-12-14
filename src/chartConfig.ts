@@ -26,6 +26,7 @@ export const chartData = {
       backgroundColor: 'rgba(54, 162, 235, 0.2)',
       borderColor: 'rgba(54, 162, 235, 1)',
       borderWidth: 1,
+      pointStyle: 'crossRot',
       pointRadius: 5,
       pointHoverRadius: 8,
       stack: '2023',
@@ -38,6 +39,7 @@ export const chartData = {
       backgroundColor: 'rgba(54, 162, 235, 0.2)',
       borderColor: 'rgba(54, 162, 235, 1)',
       borderWidth: 1,
+      pointStyle: 'crossRot',
       pointRadius: 5,
       pointHoverRadius: 8,
       stack: '2024',
@@ -58,6 +60,12 @@ export const chartOptions = {
     },
   },
   scales: {
+    x: {
+      title: {
+        display: true,
+        text: '2024',
+      },
+    },
     y: {
       beginAtZero: true,
       stacked: true,

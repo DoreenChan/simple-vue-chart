@@ -1,8 +1,8 @@
 <template>
-  <label>
-    <p>{{ label }}</p>
-    <input type="checkbox" :id="id" :value="value" @change="emitUncheck($event.target.checked)" v-model="isChecked" />
+  <label class="checkbox">
     <span class="checkmark"></span>
+    <input type="checkbox" :id="id" :value="value" @change="emitUncheck($event.target.checked)" v-model="isChecked" />
+    <p>{{ label }}</p>
   </label>
 </template>
 

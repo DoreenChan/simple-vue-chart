@@ -30,9 +30,44 @@ main {
   text-align: center;
 }
 
+/* Chart settings */
 .chart-wrapper {
   background-color: #fff;
   border: 10px solid #d1d1d1;
   height: 500px;
-  padding: 40px 20px;
+  padding: 20px 80px 20px 20px;
+
+  h3 {
+    color: #666;
+  }
+}
+.chart-filters-wrapper {
+  display: flex;
+  gap: 10px;
+  color: #fff;
+
+  @media only screen and (max-width: 600px) {
+    display: block;
+    text-align: left;
+  }
+
+  .dropdown-wrapper {
+    display: flex;
+    gap: 3px;
+  }
+}
+fieldset {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+legend {
+  padding: 0.2em 0.5em;
+  color: #fff;
+  position: relative;
+  text-align: left;
+}
+.checkbox {
+  display: flex;
+  gap: 3px;
 }
