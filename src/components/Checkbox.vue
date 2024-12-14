@@ -8,7 +8,7 @@
 
 <script lang="ts">
 export default {
-  name: "CheckBox",
+  name: 'CheckBox',
   props: {
     label: String,
     id: Number,
@@ -17,13 +17,13 @@ export default {
   },
   data() {
     return {
-      isChecked: true
-    }
+      isChecked: true,
+    };
   },
   methods: {
-    emitUncheck(e) {
+    emitUncheck() {
       this.$emit('toggle-chart-type-filter');
-    }
-  }
+    },
+  },
 };
 </script>

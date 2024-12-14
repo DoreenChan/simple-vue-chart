@@ -11,20 +11,29 @@
       <fieldset>
         <legend>Filters</legend>
         <div class="chart-filters-wrapper">
-          <CheckBox v-for="(filter) in chartFilters.checkboxes" :key="filter.id" :label="filter.label" :id="filter.id"
-            :value="filter.label" @toggle-chart-type-filter="toogleChartTypeFilter"
-            :selectedYear="chartFilters.dropdown.selected" ref="checkboxRef" />
+          <CheckBox
+            v-for="filter in chartFilters.checkboxes"
+            :key="filter.id"
+            :label="filter.label"
+            :id="filter.id"
+            :value="filter.label"
+            @toggle-chart-type-filter="toogleChartTypeFilter"
+            :selectedYear="chartFilters.dropdown.selected"
+            ref="checkboxRef"
+          />
 
           <div class="dropdown-wrapper">
             Year:
-            <DropDown :options="chartFilters.dropdown.options" :selectedYear="chartFilters.dropdown.selected"
-              @update:selectedYear="updateSelectedYear" />
+            <DropDown
+              :options="chartFilters.dropdown.options"
+              :selectedYear="chartFilters.dropdown.selected"
+              @update:selectedYear="updateSelectedYear"
+            />
           </div>
 
           Title: <input v-model="chartTitle" placeholder="Please enter your chart title." />
         </div>
       </fieldset>
-
 
       <!-- Chart Wrapper -->
       <div class="chart-wrapper">
@@ -40,8 +49,18 @@
 import CheckBox from './components/Checkbox.vue';
 import DropDown from './components/Dropdown.vue';
 import { chartData, chartOptions, chartFilters } from './chartConfig.js';
-import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Line } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
 ChartJS.register(
   CategoryScale,
@@ -51,15 +70,16 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export default {
   name: 'SimpleChart',
   components: {
     Bar,
+    Line,
     CheckBox,
-    DropDown
+    DropDown,
   },
   data() {
     return { chartData, chartOptions, chartFilters, chartTitle: 'Chart Title' };
@@ -74,16 +94,18 @@ export default {
       const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
 
       const data = datasets.filter((dataset) => dataset.stack === year);
-      data.forEach(dataset => {
+      data.forEach((dataset) => {
         dataset.hidden = false;
       });
 
-      return { data }
+      return { data };
     },
     filterDatasets() {
       const chart = this.$refs.comboRef.chart;
       const datasets = chart.data.datasets;
-      const uncheckedValues = this.$refs.checkboxRef.filter(checkbox => checkbox.isChecked == false);
+      const uncheckedValues = this.$refs.checkboxRef.filter(
+        (checkbox) => checkbox.isChecked == false,
+      );
 
       //Hide all datasets first
       this.hideAllDataset(datasets);
@@ -92,8 +114,8 @@ export default {
       const displayDataset = this.getDatasetByYear(datasets).data;
 
       //Check for type
-      uncheckedValues.forEach(checkbox => {
-        displayDataset.find(data => data.label == checkbox.label).hidden = true;
+      uncheckedValues.forEach((checkbox) => {
+        displayDataset.find((data) => data.label == checkbox.label).hidden = true;
       });
 
       //Check for x-axis labeling
@@ -108,7 +130,7 @@ export default {
       this.selectedYear = newSelectedYear;
       //Filter
       this.filterDatasets();
-    }
+    },
   },
-}
+};
 </script>

@@ -12,17 +12,17 @@
 export default {
   props: {
     options: Array,
-    selectedYear: String
+    selectedYear: String,
   },
   data() {
     return {
-      selectedOption: this.selectedYear
-    }
+      selectedOption: this.selectedYear,
+    };
   },
   watch: {
     selectedOption(newSelected) {
       this.$emit('update:selectedYear', newSelected);
-    }
-  }
-}
+    },
+  },
+};
 </script>
