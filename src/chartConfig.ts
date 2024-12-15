@@ -76,11 +76,11 @@ export const chartOptions = {
 export const chartFilters = {
   checkboxes: [
     {
-      id: 1,
+      id: '1',
       label: 'Sales',
     },
     {
-      id: 2,
+      id: '2',
       label: 'Profit Margin',
     },
   ],

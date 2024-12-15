@@ -11,7 +11,7 @@ export default {
   name: 'CheckBox',
   props: {
     label: String,
-    id: Number,
+    id: String,
     value: String,
     selectedYear: String,
     filterDatasets: Function,
@@ -23,6 +23,8 @@ export default {
   },
   methods: {
     onChange() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       this.filterDatasets();
     },
   },

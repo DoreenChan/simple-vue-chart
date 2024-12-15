@@ -41,7 +41,8 @@
       <div class="chart-wrapper">
         <h3>{{ chartTitle }}</h3>
 
-        <Bar ref="comboRef" id="combo-chart" :options="chartOptions" :data="chartData" />
+        <!-- <Bar ref="comboRef" id="combo-chart" :options="chartOptions" :data="chartData" /> -->
+        <ComboChart ref="comboRef" :data="chartData" :options="chartOptions" />
       </div>
     </div>
   </main>
@@ -50,83 +51,63 @@
 <script lang="ts">
 import CheckBox from './components/Checkbox.vue';
 import DropDown from './components/DropDown.vue';
+import ComboChart from './components/ComboChart.vue';
 import { chartData, chartOptions, chartFilters } from './chartConfig.js';
-import { Bar, Line as LineChart } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-);
 
 export default {
   name: 'SimpleChart',
   components: {
-    Bar,
-    // eslint-disable-next-line vue/no-unused-components
-    LineChart,
+    ComboChart,
     CheckBox,
     DropDown,
   },
-  data() {
-    return { chartData, chartOptions, chartFilters, chartTitle: 'Chart Title' };
+  setup() {
+    return {
+      chartData,
+      chartOptions,
+      chartFilters,
+      chartTitle: 'Chart Title',
+      selectedYear: chartFilters.dropdown.selected,
+    };
   },
   methods: {
-    hideAllDataset(data: unknown[]) {
-      data.forEach((dataset: { hidden: boolean }) => (dataset.hidden = false));
-    },
-    getDatasetByYear(datasets: unknown[]) {
-      const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
-
-      const data = datasets.filter((dataset: { stack: unknown }) => dataset.stack === year);
-      data.forEach((dataset: { hidden: boolean }) => {
-        dataset.hidden = false;
-      });
-      return { data };
+    hideAllDataset(data: { hidden: boolean }[]) {
+      data.forEach((dataset: { hidden: boolean }) => (dataset.hidden = true));
     },
     filterDatasets() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       const chart = this.$refs.comboRef.chart;
       const datasets = this.chartData.datasets;
-      const uncheckedValues = this.$refs.checkboxRef.filter(
-        (checkbox: { isChecked: boolean }) => !checkbox.isChecked,
+      const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      const checkedValues = this.$refs.checkboxRef?.filter(
+        (checkbox: { isChecked: boolean }) => checkbox.isChecked,
       );
 
       //Hide all datasets first
       this.hideAllDataset(datasets);
 
-      //Check for year
-      const displayDataset = this.getDatasetByYear(datasets).data;
-
       //Check for type
-      uncheckedValues.forEach((checkbox: { label: unknown }) => {
-        displayDataset.find((data: { label: unknown }) => data.label == checkbox.label).hidden =
-          true;
+      checkedValues.forEach((checkbox: { label: unknown }) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        datasets.find(
+          (data: { label: unknown; stack: string }) =>
+            data.label == checkbox.label && data.stack == year,
+        ).hidden = false;
       });
 
       //reassign chart's datasets
-      chart.data.datasets = displayDataset;
+      chart.data.datasets = datasets;
 
       //Check for x-axis labeling
       chart.options.scales.x.title.text = this.selectedYear;
       chart.update();
     },
-    updateSelectedYear(newSelectedYear: unknown) {
+    updateSelectedYear(newSelectedYear: string) {
       //Update selected year
       this.selectedYear = newSelectedYear;
     },
