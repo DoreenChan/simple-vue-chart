@@ -1,6 +1,6 @@
 # simple-vue-chart
 
-This is a simple chart build by Vue3 + [Vue-ChartJS](https://vue-chartjs.org/) in Vite.
+This is a simple chart build by Vue3 + [Chart.js](https://www.chartjs.org/) in Vite.
 
 ## Recommended IDE Setup
 
