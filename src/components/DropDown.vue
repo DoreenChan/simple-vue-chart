@@ -1,6 +1,6 @@
 <template>
   <div>
-    <select v-model="selectedOption">
+    <select v-model="selectedOption" @change="filterDatasets()">
       <option v-for="option in options" :key="option.id" :value="option.label">
         {{ option.label }}
       </option>
@@ -13,11 +13,17 @@ export default {
   props: {
     options: Array,
     selectedYear: String,
+    filterDatasets: Function
   },
   data() {
     return {
       selectedOption: this.selectedYear,
     };
+  },
+  methods: {
+    onChange() {
+      this.filterDatasets();
+    }
   },
   watch: {
     selectedOption(newSelected) {

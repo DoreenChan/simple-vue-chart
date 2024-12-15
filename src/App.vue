@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-unused-components -->
 <template>
   <header>
     <h1>Simple Charts build by Vue-ChartJS (Chart.js)</h1>
@@ -12,13 +13,13 @@
         <legend>Filters</legend>
         <div class="chart-filters-wrapper">
           <CheckBox v-for="filter in chartFilters.checkboxes" :key="filter.id" :label="filter.label" :id="filter.id"
-            :value="filter.label" @toggle-chart-type-filter="toogleChartTypeFilter"
-            :selectedYear="chartFilters.dropdown.selected" ref="checkboxRef" />
+            :value="filter.label" :filterDatasets="filterDatasets" :selectedYear="chartFilters.dropdown.selected"
+            ref="checkboxRef" />
 
           <div class="dropdown-wrapper">
             Year:
             <DropDown :options="chartFilters.dropdown.options" :selectedYear="chartFilters.dropdown.selected"
-              @update:selectedYear="updateSelectedYear" />
+              @update:selectedYear="updateSelectedYear" :filterDatasets="filterDatasets" />
           </div>
 
           Title: <input v-model="chartTitle" placeholder="Please enter your chart title." />
@@ -75,26 +76,23 @@ export default {
     return { chartData, chartOptions, chartFilters, chartTitle: 'Chart Title' };
   },
   methods: {
-    hideAllDataset(datasets) {
-      datasets.forEach((dataset) => {
-        dataset.hidden = true;
-      });
+    hideAllDataset(data: unknown[]) {
+      data.forEach((dataset: { hidden: boolean; }) => (dataset.hidden = false));
     },
-    getDatasetByYear(datasets) {
+    getDatasetByYear(datasets: unknown[]) {
       const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
 
-      const data = datasets.filter((dataset) => dataset.stack === year);
-      data.forEach((dataset) => {
+      const data = datasets.filter((dataset: { stack: unknown; }) => dataset.stack === year);
+      data.forEach((dataset: { hidden: boolean; }) => {
         dataset.hidden = false;
       });
-
       return { data };
     },
     filterDatasets() {
       const chart = this.$refs.comboRef.chart;
-      const datasets = chart.data.datasets;
+      const datasets = this.chartData.datasets;
       const uncheckedValues = this.$refs.checkboxRef.filter(
-        (checkbox) => checkbox.isChecked == false,
+        (checkbox: { isChecked: boolean; }) => !checkbox.isChecked,
       );
 
       //Hide all datasets first
@@ -104,22 +102,20 @@ export default {
       const displayDataset = this.getDatasetByYear(datasets).data;
 
       //Check for type
-      uncheckedValues.forEach((checkbox) => {
-        displayDataset.find((data) => data.label == checkbox.label).hidden = true;
+      uncheckedValues.forEach((checkbox: { label: unknown; }) => {
+        displayDataset.find((data: { label: unknown; }) => data.label == checkbox.label).hidden = true;
       });
+
+      //reassign chart's datasets
+      chart.data.datasets = displayDataset;
 
       //Check for x-axis labeling
       chart.options.scales.x.title.text = this.selectedYear;
       chart.update();
     },
-    toogleChartTypeFilter() {
-      this.filterDatasets();
-    },
-    updateSelectedYear(newSelectedYear) {
+    updateSelectedYear(newSelectedYear: unknown) {
       //Update selected year
       this.selectedYear = newSelectedYear;
-      //Filter
-      this.filterDatasets();
     },
   },
 };
