@@ -13,7 +13,7 @@ export default {
   props: {
     options: Array,
     selectedYear: String,
-    filterDatasets: Function
+    filterDatasets: Function,
   },
   data() {
     return {
@@ -23,7 +23,7 @@ export default {
   methods: {
     onChange() {
       this.filterDatasets();
-    }
+    },
   },
   watch: {
     selectedOption(newSelected) {

@@ -14,7 +14,7 @@ export default {
     id: Number,
     value: String,
     selectedYear: String,
-    filterDatasets: Function
+    filterDatasets: Function,
   },
   data() {
     return {
@@ -24,7 +24,7 @@ export default {
   methods: {
     onChange() {
       this.filterDatasets();
-    }
+    },
   },
 };
 </script>
