@@ -1,6 +1,6 @@
 <template>
   <div>
-    <select v-model="selectedOption" @change="filterDatasets()">
+    <select @change="handleSelectChange">
       <option v-for="option in options" :key="option.id" :value="option.label">
         {{ option.label }}
       </option>
@@ -13,24 +13,14 @@ export default {
   props: {
     options: Array,
     selectedYear: String,
-    filterDatasets: Function,
   },
-  data() {
-    return {
-      selectedOption: this.selectedYear,
+  emits: ['update:selectedYear'],
+  setup(props, { emit }) {
+    const handleSelectChange = (event: { target: { value: never } }) => {
+      emit('update:selectedYear', event.target.value);
     };
-  },
-  methods: {
-    onChange() {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.filterDatasets();
-    },
-  },
-  watch: {
-    selectedOption(newSelected) {
-      this.$emit('update:selectedYear', newSelected);
-    },
+
+    return { handleSelectChange };
   },
 };
 </script>

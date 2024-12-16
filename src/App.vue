@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-unused-components -->
 <template>
   <header>
     <h1>Simple Charts build by Vue-ChartJS (Chart.js)</h1>
@@ -18,9 +17,8 @@
             :label="filter.label"
             :id="filter.id"
             :value="filter.label"
-            :filterDatasets="filterDatasets"
-            :selectedYear="chartFilters.dropdown.selected"
             ref="checkboxRef"
+            @update:checked="handleUpdateChecked"
           />
 
           <div class="dropdown-wrapper">
@@ -28,8 +26,7 @@
             <DropDown
               :options="chartFilters.dropdown.options"
               :selectedYear="chartFilters.dropdown.selected"
-              @update:selectedYear="updateSelectedYear"
-              :filterDatasets="filterDatasets"
+              @update:selectedYear="handleUpdateSelect"
             />
           </div>
 
@@ -49,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import { ref } from 'vue';
 import CheckBox from './components/Checkbox.vue';
 import DropDown from './components/DropDown.vue';
 import ComboChart from './components/ComboChart.vue';
@@ -62,38 +60,28 @@ export default {
     DropDown,
   },
   setup() {
-    return {
-      chartData,
-      chartOptions,
-      chartFilters,
-      chartTitle: 'Chart Title',
-      selectedYear: chartFilters.dropdown.selected,
-    };
-  },
-  methods: {
-    hideAllDataset(data: { hidden: boolean }[]) {
-      data.forEach((dataset: { hidden: boolean }) => (dataset.hidden = true));
-    },
-    filterDatasets() {
+    const chartTitle = ref('Chart Title');
+    const selectedYear = ref('');
+    const comboRef = ref(null);
+    const checkboxRef = ref(null);
+
+    const filterDatasets = (year: string) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      const chart = this.$refs.comboRef.chart;
-      const datasets = this.chartData.datasets;
-      const year = this.selectedYear ? this.selectedYear : chartFilters.dropdown.selected;
+      const chart = comboRef.value.chart;
+      const datasets = chart.data.datasets;
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      const checkedValues = this.$refs.checkboxRef?.filter(
+      const checkedValues = checkboxRef.value?.filter(
         (checkbox: { isChecked: boolean }) => checkbox.isChecked,
       );
 
       //Hide all datasets first
-      this.hideAllDataset(datasets);
+      datasets.forEach((dataset: { hidden: boolean }) => (dataset.hidden = true));
 
       //Check for type
       checkedValues.forEach((checkbox: { label: unknown }) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         datasets.find(
           (data: { label: unknown; stack: string }) =>
             data.label == checkbox.label && data.stack == year,
@@ -104,13 +92,32 @@ export default {
       chart.data.datasets = datasets;
 
       //Check for x-axis labeling
-      chart.options.scales.x.title.text = this.selectedYear;
+      chart.options.scales.x.title.text = year;
       chart.update();
-    },
-    updateSelectedYear(newSelectedYear: string) {
-      //Update selected year
-      this.selectedYear = newSelectedYear;
-    },
+    };
+
+    const handleUpdateSelect = (value: string) => {
+      filterDatasets(value);
+    };
+
+    const handleUpdateChecked = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      const year = comboRef.value?.chart.options.scales.x.title.text;
+      filterDatasets(year);
+    };
+
+    return {
+      chartData,
+      chartOptions,
+      chartFilters,
+      chartTitle,
+      selectedYear,
+      handleUpdateSelect,
+      handleUpdateChecked,
+      comboRef,
+      checkboxRef,
+    };
   },
 };
 </script>
